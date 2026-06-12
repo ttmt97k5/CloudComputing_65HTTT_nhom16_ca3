@@ -11,6 +11,7 @@ env:
   REGION: asia-southeast1
   SERVICE: eduquiz
   IMAGE: asia-southeast1-docker.pkg.dev/eduquiz-499214/eduquiz-repo/eduquiz
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   deploy:
