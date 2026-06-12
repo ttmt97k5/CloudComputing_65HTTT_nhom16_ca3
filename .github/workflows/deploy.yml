@@ -1,0 +1,64 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'BE/**'
+
+env:
+  PROJECT_ID: eduquiz-499214
+  REGION: asia-southeast1
+  SERVICE: eduquiz
+  IMAGE: asia-southeast1-docker.pkg.dev/eduquiz-499214/eduquiz-repo/eduquiz
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: projects/354097013555/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: github-actions-sa@eduquiz-499214.iam.gserviceaccount.com
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.IMAGE }}:${{ github.sha }} \
+                       -t ${{ env.IMAGE }}:latest \
+                       ./BE
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.IMAGE }}:${{ github.sha }}
+          docker push ${{ env.IMAGE }}:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE }} \
+            --image ${{ env.IMAGE }}:${{ github.sha }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --set-env-vars DB_HOST=34.142.164.18,DB_NAME=eduquiz,DB_USER=eduquiz_user,DB_PASS=Eduquiz_User@2026,JWT_SECRET=eduquiz-secret-key-2026-nhom16
+
+      - name: Print service URL
+        run: |
+          gcloud run services describe ${{ env.SERVICE }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --format 'value(status.url)'
