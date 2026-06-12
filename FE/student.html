@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduQuiz – Học sinh</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --indigo: #4F46E5; --indigo-dark: #3730A3; --indigo-light: #EEF2FF;
+      --green: #10B981; --green-light: #ECFDF5;
+      --text: #111827; --muted: #6B7280; --border: #E5E7EB; --white: #FFFFFF;
+      --bg: #F9FAFB;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; color: var(--text); background: var(--bg); }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: 240px; height: 100vh;
+      background: var(--white); border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; padding: 24px 16px;
+    }
+    .sidebar-logo { font-family: 'Sora', sans-serif; font-size: 20px; font-weight: 800; color: var(--indigo); padding: 8px 12px; margin-bottom: 24px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px; border-radius: 8px; font-size: 14px; font-weight: 500;
+      color: var(--muted); text-decoration: none; transition: all .2s; cursor: pointer; margin-bottom: 4px;
+    }
+    .nav-item:hover, .nav-item.active { background: var(--indigo-light); color: var(--indigo); }
+    .sidebar-footer { margin-top: auto; }
+    .user-info { display: flex; align-items: center; gap: 10px; padding: 12px; border-top: 1px solid var(--border); }
+    .avatar {
+      width: 36px; height: 36px; border-radius: 50%; background: var(--indigo);
+      display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px;
+    }
+    .user-name { font-size: 13px; font-weight: 600; }
+    .user-role { font-size: 11px; color: var(--muted); }
+    .btn-logout { width: 100%; margin-top: 8px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; background: none; font-size: 13px; color: var(--muted); cursor: pointer; font-family: inherit; }
+    .btn-logout:hover { color: #EF4444; border-color: #EF4444; }
+
+    /* MAIN */
+    .main { margin-left: 240px; padding: 32px; }
+    .page-header { margin-bottom: 28px; }
+    .page-header h1 { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 800; }
+    .page-header p { font-size: 14px; color: var(--muted); margin-top: 4px; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
+    .tab {
+      padding: 10px 20px; font-size: 14px; font-weight: 500; color: var(--muted);
+      cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .2s;
+    }
+    .tab.active { color: var(--indigo); border-bottom-color: var(--indigo); }
+
+    /* EXAM GRID */
+    .exam-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+    .exam-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+      padding: 24px; transition: box-shadow .2s;
+    }
+    .exam-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+    .exam-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+    .exam-title { font-weight: 600; font-size: 16px; flex: 1; }
+    .badge-active { background: var(--green-light); color: var(--green); padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 500; }
+    .exam-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+    .exam-meta { display: flex; gap: 16px; margin-bottom: 16px; }
+    .meta-item { font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 4px; }
+    .btn-start {
+      width: 100%; padding: 10px; background: var(--indigo); color: var(--white);
+      border: none; border-radius: 8px; font-size: 14px; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: background .2s;
+    }
+    .btn-start:hover { background: var(--indigo-dark); }
+
+    /* RESULTS TABLE */
+    .results-table { background: var(--white); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    th { padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; background: var(--bg); border-bottom: 1px solid var(--border); }
+    td { padding: 14px 16px; font-size: 14px; border-bottom: 1px solid var(--border); }
+    tr:last-child td { border-bottom: none; }
+    .score-badge {
+      display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 13px; font-weight: 600;
+    }
+    .score-high { background: var(--green-light); color: var(--green); }
+    .score-mid { background: #FFF7ED; color: #C2410C; }
+    .score-low { background: #FEF2F2; color: #B91C1C; }
+
+    /* HIDDEN */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">📚 EduQuiz</div>
+    <a class="nav-item active" onclick="switchTab('exams', this)">📋 Danh sách đề thi</a>
+    <a class="nav-item" onclick="switchTab('results', this)">📊 Kết quả của tôi</a>
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="avatar">HS</div>
+        <div>
+          <div class="user-name">Học sinh</div>
+          <div class="user-role">STUDENT</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="window.location.href='login.html'">Đăng xuất</button>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- EXAMS TAB -->
+    <div id="tab-exams" class="tab-content active">
+      <div class="page-header">
+        <h1>Danh sách đề thi</h1>
+        <p>Chọn đề thi và bắt đầu làm bài</p>
+      </div>
+      <div class="exam-grid">
+        <div class="exam-card">
+          <div class="exam-header">
+            <div class="exam-title">Toán học cơ bản</div>
+            <span class="badge-active">Đang mở</span>
+          </div>
+          <div class="exam-desc">Kiểm tra kiến thức toán cơ bản: số học, đại số và hình học.</div>
+          <div class="exam-meta">
+            <div class="meta-item">⏱ 30 phút</div>
+            <div class="meta-item">❓ 20 câu</div>
+            <div class="meta-item">👤 GV. Nguyễn</div>
+          </div>
+          <button class="btn-start">Bắt đầu làm bài</button>
+        </div>
+        <div class="exam-card">
+          <div class="exam-header">
+            <div class="exam-title">Tiếng Anh – Grammar</div>
+            <span class="badge-active">Đang mở</span>
+          </div>
+          <div class="exam-desc">Ngữ pháp tiếng Anh trình độ B1: tenses, conditionals, passive voice.</div>
+          <div class="exam-meta">
+            <div class="meta-item">⏱ 45 phút</div>
+            <div class="meta-item">❓ 30 câu</div>
+            <div class="meta-item">👤 GV. Trần</div>
+          </div>
+          <button class="btn-start">Bắt đầu làm bài</button>
+        </div>
+        <div class="exam-card">
+          <div class="exam-header">
+            <div class="exam-title">Tin học đại cương</div>
+            <span class="badge-active">Đang mở</span>
+          </div>
+          <div class="exam-desc">Kiến thức cơ bản về máy tính, mạng và lập trình nhập môn.</div>
+          <div class="exam-meta">
+            <div class="meta-item">⏱ 20 phút</div>
+            <div class="meta-item">❓ 15 câu</div>
+            <div class="meta-item">👤 GV. Lê</div>
+          </div>
+          <button class="btn-start">Bắt đầu làm bài</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RESULTS TAB -->
+    <div id="tab-results" class="tab-content">
+      <div class="page-header">
+        <h1>Kết quả của tôi</h1>
+        <p>Lịch sử các bài đã thi</p>
+      </div>
+      <div class="results-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Đề thi</th>
+              <th>Điểm</th>
+              <th>Tỉ lệ đúng</th>
+              <th>Thời gian nộp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Toán học cơ bản</td>
+              <td><span class="score-badge score-high">18/20</span></td>
+              <td>90%</td>
+              <td>12/06/2026 09:00</td>
+            </tr>
+            <tr>
+              <td>Tiếng Anh – Grammar</td>
+              <td><span class="score-badge score-mid">20/30</span></td>
+              <td>67%</td>
+              <td>11/06/2026 14:30</td>
+            </tr>
+            <tr>
+              <td>Tin học đại cương</td>
+              <td><span class="score-badge score-low">8/15</span></td>
+              <td>53%</td>
+              <td>10/06/2026 10:15</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    function switchTab(name, el) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById('tab-' + name).classList.add('active');
+      el.classList.add('active');
+    }
+  </script>
+</body>
+</html>

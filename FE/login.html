@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduQuiz – Đăng nhập</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --indigo: #4F46E5; --indigo-dark: #3730A3; --indigo-light: #EEF2FF;
+      --text: #111827; --muted: #6B7280; --border: #E5E7EB; --white: #FFFFFF;
+      --error: #EF4444;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif; color: var(--text);
+      min-height: 100vh; display: flex;
+      background: linear-gradient(135deg, var(--indigo-light) 0%, #fff 60%);
+    }
+
+    /* LEFT PANEL */
+    .left {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: 64px; background: linear-gradient(160deg, var(--indigo-dark), var(--indigo));
+      color: white;
+    }
+    .left-logo { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 48px; }
+    .left h2 { font-family: 'Sora', sans-serif; font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+    .left p { font-size: 16px; opacity: .75; line-height: 1.7; max-width: 360px; }
+
+    /* RIGHT PANEL */
+    .right {
+      flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px;
+    }
+    .card { width: 100%; max-width: 420px; }
+    .card h1 { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+    .card .sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+    .card .sub a { color: var(--indigo); text-decoration: none; font-weight: 500; }
+
+    .form-group { margin-bottom: 20px; }
+    label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 15px; font-family: inherit; outline: none; transition: border-color .2s;
+    }
+    input:focus { border-color: var(--indigo); }
+
+    .role-select { display: flex; gap: 10px; margin-bottom: 24px; }
+    .role-btn {
+      flex: 1; padding: 12px; border: 1.5px solid var(--border); border-radius: 8px;
+      background: none; font-size: 14px; font-family: inherit; cursor: pointer;
+      text-align: center; transition: all .2s; font-weight: 500;
+    }
+    .role-btn.active { border-color: var(--indigo); background: var(--indigo-light); color: var(--indigo); }
+
+    .btn-submit {
+      width: 100%; padding: 14px; background: var(--indigo); color: var(--white);
+      border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: background .2s;
+    }
+    .btn-submit:hover { background: var(--indigo-dark); }
+
+    @media (max-width: 768px) {
+      .left { display: none; }
+      .right { padding: 40px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="left">
+    <div class="left-logo">📚 EduQuiz</div>
+    <h2>Chào mừng<br/>trở lại!</h2>
+    <p>Đăng nhập để tiếp tục làm bài thi hoặc quản lý đề thi của bạn.</p>
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <h1>Đăng nhập</h1>
+      <p class="sub">Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a></p>
+
+      <div class="role-select">
+        <button class="role-btn active" onclick="selectRole(this, 'student')">👨‍🎓 Học sinh</button>
+        <button class="role-btn" onclick="selectRole(this, 'teacher')">👨‍🏫 Giáo viên</button>
+      </div>
+
+      <div class="form-group">
+        <label>Tên đăng nhập</label>
+        <input type="text" placeholder="Nhập tên đăng nhập" />
+      </div>
+      <div class="form-group">
+        <label>Mật khẩu</label>
+        <input type="password" placeholder="Nhập mật khẩu" />
+      </div>
+
+      <button class="btn-submit" onclick="handleLogin()">Đăng nhập</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedRole = 'student';
+
+    function selectRole(btn, role) {
+      document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedRole = role;
+    }
+
+    function handleLogin() {
+      const username = document.querySelectorAll('input')[0].value;
+      const password = document.querySelectorAll('input')[1].value;
+      if (!username || !password) { alert('Vui lòng nhập đầy đủ thông tin!'); return; }
+      // TODO: gọi API POST /api/auth/login
+      if (selectedRole === 'teacher') window.location.href = 'teacher.html';
+      else window.location.href = 'student.html';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduQuiz – Đăng ký</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --indigo: #4F46E5; --indigo-dark: #3730A3; --indigo-light: #EEF2FF;
+      --text: #111827; --muted: #6B7280; --border: #E5E7EB; --white: #FFFFFF;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', sans-serif; color: var(--text); min-height: 100vh;
+      display: flex; background: linear-gradient(135deg, var(--indigo-light) 0%, #fff 60%);
+    }
+    .left {
+      flex: 1; display: flex; flex-direction: column; justify-content: center;
+      padding: 64px; background: linear-gradient(160deg, var(--indigo-dark), var(--indigo)); color: white;
+    }
+    .left-logo { font-family: 'Sora', sans-serif; font-size: 24px; font-weight: 800; margin-bottom: 48px; }
+    .left h2 { font-family: 'Sora', sans-serif; font-size: 36px; font-weight: 800; line-height: 1.2; margin-bottom: 16px; }
+    .left p { font-size: 16px; opacity: .75; line-height: 1.7; max-width: 360px; }
+    .steps { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+    .step { display: flex; align-items: center; gap: 12px; font-size: 14px; opacity: .85; }
+    .step-num {
+      width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,.2);
+      display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0;
+    }
+
+    .right { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 24px; }
+    .card { width: 100%; max-width: 440px; }
+    .card h1 { font-family: 'Sora', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+    .card .sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+    .card .sub a { color: var(--indigo); text-decoration: none; font-weight: 500; }
+
+    .role-select { display: flex; gap: 10px; margin-bottom: 20px; }
+    .role-btn {
+      flex: 1; padding: 12px; border: 1.5px solid var(--border); border-radius: 8px;
+      background: none; font-size: 14px; font-family: inherit; cursor: pointer; font-weight: 500; transition: all .2s;
+    }
+    .role-btn.active { border-color: var(--indigo); background: var(--indigo-light); color: var(--indigo); }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 15px; font-family: inherit; outline: none; transition: border-color .2s;
+    }
+    input:focus { border-color: var(--indigo); }
+
+    .btn-submit {
+      width: 100%; padding: 14px; background: var(--indigo); color: var(--white);
+      border: none; border-radius: 8px; font-size: 15px; font-weight: 600;
+      font-family: inherit; cursor: pointer; transition: background .2s; margin-top: 4px;
+    }
+    .btn-submit:hover { background: var(--indigo-dark); }
+
+    @media (max-width: 768px) {
+      .left { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="left">
+    <div class="left-logo">📚 EduQuiz</div>
+    <h2>Tham gia<br/>EduQuiz</h2>
+    <p>Tạo tài khoản miễn phí và bắt đầu ngay hôm nay.</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div> Tạo tài khoản</div>
+      <div class="step"><div class="step-num">2</div> Chọn vai trò của bạn</div>
+      <div class="step"><div class="step-num">3</div> Bắt đầu thi hoặc tạo đề</div>
+    </div>
+  </div>
+
+  <div class="right">
+    <div class="card">
+      <h1>Tạo tài khoản</h1>
+      <p class="sub">Đã có tài khoản? <a href="login.html">Đăng nhập</a></p>
+
+      <div class="role-select">
+        <button class="role-btn active" onclick="selectRole(this, 'STUDENT')">👨‍🎓 Học sinh</button>
+        <button class="role-btn" onclick="selectRole(this, 'TEACHER')">👨‍🏫 Giáo viên</button>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Họ và tên</label>
+          <input type="text" id="fullName" placeholder="Nguyễn Văn A" />
+        </div>
+        <div class="form-group">
+          <label>Tên đăng nhập</label>
+          <input type="text" id="username" placeholder="nguyenvana" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" placeholder="email@example.com" />
+      </div>
+      <div class="form-group">
+        <label>Mật khẩu</label>
+        <input type="password" id="password" placeholder="Tối thiểu 6 ký tự" />
+      </div>
+
+      <button class="btn-submit" onclick="handleRegister()">Đăng ký ngay</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedRole = 'STUDENT';
+    function selectRole(btn, role) {
+      document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      selectedRole = role;
+    }
+    function handleRegister() {
+      const fullName = document.getElementById('fullName').value;
+      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      if (!fullName || !username || !email || !password) { alert('Vui lòng nhập đầy đủ thông tin!'); return; }
+      // TODO: gọi API POST /api/auth/register
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
